@@ -1,0 +1,13 @@
+1. criar a app clientes
+2. configuração da aplicação
+
+config -> infra
+app -> aplicação principal, onde temos a gestão de produtos
+clientes -> aplicação que gerencia clientes e se relaciona com produto
+
+1 x 1 <- Ex. Perfil -> cada usuário tem um perfil, e cada perfil pertence a um usuário
+1 x N <- Ex. Produto x Categoria -> Uma categoria pode ter vários produtos, mas cada produto pertence a uma categoria
+M x N <- Ex. Aluno x Curso -> Um aluno pode fazer vários cursos, e um curso pode ter vários alunos.
+
+Verbos HTTP
+GET, POST, PUT, PATCH, DELETE
