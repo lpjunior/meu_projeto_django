@@ -10,4 +10,33 @@ clientes -> aplicação que gerencia clientes e se relaciona com produto
 M x N <- Ex. Aluno x Curso -> Um aluno pode fazer vários cursos, e um curso pode ter vários alunos.
 
 Verbos HTTP
-GET, POST, PUT, PATCH, DELETE
+GET -> Por padrão é utilizado SEMPRE que precisar requisitar algo. (site, um arquivo, uma informação, uma imagem)
+POST -> Por padrão é utilizado para enviar informações (registro)
+PUT -> É utilizado quando se quer atualizar COMPLETAMENTE um registro
+PATCH -> É utilizado quando se quer atualizar PARCIALMENTE um registro
+DELETE -> É utilizado para remover um registro
+
+https://dominio/rota/parametro_de_consulta
+
+https://jsonplaceholder.typicode.com/posts/1
+
+https://localhost:8000
+https://localhost:8000/novo -> vai para o formulario
+https://localhost:8000/criar -> dentro formulario vou chamar o criar que fara o registro na base
+
+https://localhost:8000/posts/1
+https://127.0.0.1:8000/posts/1
+
+
+----
+- formulario de clientes (inserção, edição de dados)
+- templates (novo_cliente, lista_clientes)
+
+O que precisa fazer:
+- criar o template de lista de clientes
+- criar a view de listagem de clientes
+- criar a clientes/urls.py
+- associar a clientes/urls.py no config/urls.py
+
+
+http://127.0.0.1:8000/clientesnovo/?q=luis

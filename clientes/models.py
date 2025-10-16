@@ -5,6 +5,7 @@ class Cliente(models.Model):
     nome = models.CharField(max_length=120)
     email = models.EmailField(unique=True)
     produto_favorito = models.ForeignKey(Produto, on_delete=models.SET_NULL, null=True, blank=True)
+    criado_em = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f'{self.nome} ({self.email})'
