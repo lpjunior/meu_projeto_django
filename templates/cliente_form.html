@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block title %}{% if cliente %}Editar Cliente{% else %}Novo Cliente{% endif %}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-10 col-lg-6">
+      <div class="card shadow-sm">
+        <div class="card-header">
+          <h2 class="h5 mb-0">{% if cliente %}Editar Cliente{% else %}Novo Cliente{% endif %}</h2>
+        </div>
+
+        <div class="card-body">
+          {% if error or erro %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+              <strong>Erro:</strong> {{ error|default:erro }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+            </div>
+          {% endif %}
+
+          <form action="{% if cliente %}{% url 'editar_cliente' cliente.id %}{% else %}{% url 'novo_cliente' %}{% endif %}" method="post" class="needs-validation" novalidate>
+            {% csrf_token %}
+
+            <div class="mb-3">
+              <label for="nome_id" class="form-label">Nome do cliente</label>
+              <input
+                type="text"
+                name="nome"
+                id="nome_id"
+                class="form-control"
+                placeholder="Exemplo, Luis"
+                required
+                maxlength="120"
+                value="{{ cliente.nome }}"
+              >
+              <div class="form-text">Use um nome claro e descritivo.</div>
+              <div class="invalid-feedback">Informe o nome do cliente.</div>
+            </div>
+
+            <div class="mb-3">
+              <label for="email_id" class="form-label">E-mail do cliente</label>
+              <input
+                type="email"
+                name="email"
+                id="email_id"
+                class="form-control"
+                placeholder="Exemplo, luis@senac.com.br"
+                value="{{ cliente.email }}"
+                required
+              >
+              <div class="form-text">Use um e-mail válido.</div>
+              <div class="invalid-feedback">Informe o e-mail do cliente.</div>
+            </div>
+
+            <div class="mb-3">
+              <label for="produto_favorito_id" class="form-label">Produto favorito</label>
+              <select
+                name="produto_favorito"
+                id="produto_favorito_id"
+                class="form-select"
+                required
+              >
+                <option value="">Selecione</option>
+                {% for p in produtos %}
+                  <option value="{{ p.id }}"
+                    {% if cliente and cliente.produto_favorito and cliente.produto_favorito.id == p.id %}selected{% endif %}
+                  >{{ p.nome }}</option>
+                {% endfor %}
+              </select>
+              <div class="form-text">Escolha um produto favorito, opcionalmente atualize depois.</div>
+              <div class="invalid-feedback">Selecione um produto válido.</div>
+            </div>
+
+            <div class="d-grid gap-2 d-sm-flex justify-content-sm-end">
+              <a href="{% url 'lista_clientes' %}" class="btn btn-outline-secondary">Cancelar</a>
+              <button type="submit" class="btn btn-primary">Salvar</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="card-footer text-muted small">
+          Campos marcados como obrigatórios devem ser preenchidos.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Validação simples do Bootstrap no lado do cliente
+  (function () {
+    'use strict';
+    const forms = document.querySelectorAll('.needs-validation');
+    Array.prototype.slice.call(forms).forEach(function (form) {
+      form.addEventListener('submit', function (event) {
+        if (!form.checkValidity()) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+      }, false);
+    });
+  })();
+</script>
+{% endblock %}

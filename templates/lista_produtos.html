@@ -17,9 +17,13 @@
                             Criado em: {{ produto.criado_em|localtime|date:"d/m/Y H:i" }}
                         </small>
                     </div>
-                    <span class="badge bg-primary rounded-pill">
-                        R$ {{ produto.preco }}
-                    </span>
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="badge bg-primary rounded-pill">
+                            R$ {{ produto.preco }}
+                        </span>
+                        <a class="btn btn-outline-success btn-sm" href="{% url 'atualizar_produto' produto.id %}"><i class="fa-solid fa-pencil"></i></a>
+                        <a class="btn btn-outline-danger btn-sm" href=""><i class="fa-solid fa-trash"></i></a>
+                    </div>
                 </li>
             {% endfor %}
         </ul>

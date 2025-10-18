@@ -6,6 +6,7 @@
     <title>{% block title %}Meu Projeto Django{% endblock %}</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     {% block extra_head %}{% endblock %}
 
@@ -52,8 +53,17 @@
               <li class="nav-item">
                 <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="{% url 'lista_produtos' %}">Home</a>
               </li>
-              <li class="nav-item">
-                <a class="nav-link {% if request.path|slice:':6' == '/novo/' %}active{% endif %}" href="{% url 'novo_produto' %}">Novo Produto</a>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Gerenciamento
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item {% if request.path == '/clientes' %}active{% endif %}" href="{% url 'lista_clientes' %}">Clientes</a></li>
+                  <li><a class="dropdown-item {% if request.path == '/' %}active{% endif %}" href="{% url 'lista_produtos' %}">Produtos</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item {% if request.path|slice:':6' == '/novo/' %}active{% endif %}" href="{% url 'novo_produto' %}">Novo Produto</a></li>
+                  <li><a class="dropdown-item {% if request.path == '/clientes/novo/' %}active{% endif %}" href="{% url 'novo_cliente' %}">Novo Cliente</a></li>
+                </ul>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="/admin/">Admin</a>

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Novo Produto{% endblock %}
+{% block title %}{% if produto %}Editar Produto{% else %}Novo Produto{% endif %}{% endblock %}
 
 {% block content %}
 <div class="container py-5">
@@ -8,7 +8,7 @@
     <div class="col-12 col-md-10 col-lg-6">
       <div class="card shadow-sm">
         <div class="card-header">
-          <h2 class="h5 mb-0">Novo Produto</h2>
+          <h2 class="h5 mb-0">{% if produto %}Editar Produto{% else %}Novo Produto{% endif %}</h2>
         </div>
 
         <div class="card-body">
@@ -19,7 +19,7 @@
             </div>
           {% endif %}
 
-          <form action="{% url 'cadastrar_produto' %}" method="post" class="needs-validation" novalidate>
+          <form action="{% if produto %}{% url 'atualizar_produto' produto.id %}{% else %}{% url 'novo_produto' %}{% endif %}" method="post" class="needs-validation" novalidate>
             {% csrf_token %}
 
             <div class="mb-3">
@@ -33,6 +33,7 @@
                 required
                 autofocus
                 maxlength="120"
+                value="{{ produto.nome|default_if_none:'' }}"s
               >
               <div class="form-text">Use um nome claro e descritivo.</div>
               <div class="invalid-feedback">Informe o nome do produto.</div>
@@ -52,6 +53,7 @@
                   step="0.01"
                   required
                   inputmode="decimal"
+                  value="{{ produto.preco|default_if_none:''|cut:',' }}"
                 >
               </div>
               <div class="form-text">Digite somente números, use ponto para decimais.</div>
