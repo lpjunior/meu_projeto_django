@@ -27,7 +27,6 @@ https://localhost:8000/criar -> dentro formulario vou chamar o criar que fara o 
 https://localhost:8000/posts/1
 https://127.0.0.1:8000/posts/1
 
-
 ----
 - formulario de clientes (inserção, edição de dados)
 - templates (novo_cliente, lista_clientes)
@@ -46,8 +45,8 @@ http://127.0.0.1:8000/clientes/1 -> detalhe de cliente especificado por ID
 POST
 http://127.0.0.1:8000/clientes/ -> criar novo cliente
 PUT
-http://127.0.0.1:8000/clientes/ -> atualizar cliente por completo
+http://127.0.0.1:8000/clientes/1 -> atualizar cliente por completo
 PATCH
-http://127.0.0.1:8000/clientes/ -> atualizar parcialmente cliente
+http://127.0.0.1:8000/clientes/1 -> atualizar parcialmente cliente
 DELETE
-http://127.0.0.1:8000/clientes/ -> deletar cliente
+http://127.0.0.1:8000/clientes/1 -> deletar cliente

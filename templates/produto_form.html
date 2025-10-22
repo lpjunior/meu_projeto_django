@@ -19,7 +19,7 @@
             </div>
           {% endif %}
 
-          <form action="{% if produto %}{% url 'atualizar_produto' produto.id %}{% else %}{% url 'novo_produto' %}{% endif %}" method="post" class="needs-validation" novalidate>
+          <form id="produtoForm" action="{% if produto %}{% url 'atualizar_produto' produto.id %}{% else %}{% url 'novo_produto' %}{% endif %}" method="post" class="needs-validation" novalidate>
             {% csrf_token %}
 
             <div class="mb-3">
@@ -33,7 +33,7 @@
                 required
                 autofocus
                 maxlength="120"
-                value="{{ produto.nome|default_if_none:'' }}"s
+                value="{{ produto.nome|default_if_none:'' }}"
               >
               <div class="form-text">Use um nome claro e descritivo.</div>
               <div class="invalid-feedback">Informe o nome do produto.</div>
@@ -90,5 +90,68 @@
       }, false);
     });
   })();
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("produtoForm");
+  if (!form) return;
+
+  // Normaliza a URL do action e extrai o pathname
+  const actionUrl = new URL(form.action, window.location.origin);
+  const path = actionUrl.pathname;
+
+  // Considera edição quando a rota for /produtos/<id>/ com ou sem barra final
+  const idMatch = path.match(/^\/produtos\/(\d+)\/?$/);
+  const isEditing = Boolean(idMatch);
+
+  // Validação Bootstrap e submit via fetch
+  form.addEventListener("submit", async (event) => {
+    // Validação nativa + classes do Bootstrap
+    if (!form.checkValidity()) {
+      event.preventDefault();
+      event.stopPropagation();
+      form.classList.add("was-validated");
+      return;
+    }
+
+    event.preventDefault();
+
+    const url = form.action;
+    const formData = new FormData(form);
+    const csrfToken = document.querySelector("[name=csrfmiddlewaretoken]")?.value || "";
+
+    const method = isEditing ? "PUT" : "POST";
+
+    try {
+      const response = await fetch(url, {
+        method,
+        headers: {
+          "X-CSRFToken": csrfToken
+          // Não defina Content-Type quando enviar FormData
+        },
+        body: formData,
+        credentials: "same-origin"
+      });
+
+      if (response.ok) {
+        alert(isEditing ? "Produto atualizado com sucesso" : "Produto criado com sucesso");
+        window.location.href = "{% url 'lista_produtos' %}";
+      } else {
+        // Tenta extrair detalhes do backend
+        let detail = "";
+        try {
+          const data = await response.json();
+          detail = data?.detail || data?.message || "";
+        } catch {}
+        alert(`Erro ao salvar o produto. Código: ${response.status}${detail ? ". " + detail : ""}`);
+      }
+    } catch (error) {
+      console.error("Erro na requisição:", error);
+      alert("Falha na conexão com o servidor.");
+    } finally {
+      form.classList.add("was-validated");
+    }
+  });
+});
 </script>
 {% endblock %}

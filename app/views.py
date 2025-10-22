@@ -55,3 +55,10 @@ def atualizar_produto(request, id):
         'erro': 'Preencha nome e preço corretamente.'
     }
     return render(request, 'produto_form.html', contexto)
+
+@require_http_methods(['GET'])
+def deletar_produto(request, id):
+    produto = get_object_or_404(Produto, id=id)
+    produto.delete()
+    contexto = { 'mensagem': 'Excluído com sucesso.' }
+    return render(request, 'lista_produtos.html', contexto)

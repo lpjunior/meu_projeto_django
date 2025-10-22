@@ -22,7 +22,7 @@
                             R$ {{ produto.preco }}
                         </span>
                         <a class="btn btn-outline-success btn-sm" href="{% url 'atualizar_produto' produto.id %}"><i class="fa-solid fa-pencil"></i></a>
-                        <a class="btn btn-outline-danger btn-sm" href=""><i class="fa-solid fa-trash"></i></a>
+                        <a class="btn btn-outline-danger btn-sm delete-btn" href="{% url 'deletar_produto' produto.id %}" data-bs-toggle="modal" data-bs-target="#deleteProdutoModal" data-id="{{ produto.id }}" data-type="produto"><i class="fa-solid fa-trash"></i></a>
                     </div>
                 </li>
             {% endfor %}
@@ -33,4 +33,94 @@
         </div>
     {% endif %}
 </div>
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteProdutoModal" tabindex="-1" aria-labelledby="deleteProdutoModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="deleteProdutoModalLabel">Confirmar exclusão</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+          <p>Tem certeza de que deseja excluir este registro?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" id="confirmDeleteBtn" class="btn btn-primary">Excluir</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const deleteButtons = document.querySelectorAll(".delete-btn");
+  const modalEl = document.getElementById("deleteProdutoModal");
+  const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+  const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
+
+  let deleteUrl = null;
+  let rowToRemove = null;
+
+  // Utilitário para pegar o CSRF do cookie se necessário
+  function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(";").shift();
+    return null;
+  }
+
+  deleteButtons.forEach(button => {
+    button.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+
+      deleteUrl = button.getAttribute("href");
+      rowToRemove = button.closest("li");
+
+      // Também poderia ler data-id, se quiser exibir no modal
+      // const deleteId = button.dataset.id;
+
+      modal.show();
+    });
+  });
+
+  confirmDeleteBtn.addEventListener("click", async () => {
+    if (!deleteUrl) return;
+
+    // Tenta achar o token no template, cai para o cookie se necessário
+    const csrfFromInput = document.querySelector("[name=csrfmiddlewaretoken]")?.value;
+    const csrfToken = csrfFromInput || getCookie("csrftoken") || "";
+
+    try {
+      const response = await fetch(deleteUrl, {
+        method: "DELETE",
+        headers: { "X-CSRFToken": csrfToken },
+        credentials: "same-origin"
+      });
+
+      if (response.ok) {
+        modal.hide();
+
+        // Remoção otimista do item, melhora a UX
+        if (rowToRemove) {
+          rowToRemove.remove();
+        } else {
+          window.location.reload();
+        }
+      } else {
+        alert(`Erro ao excluir. Código: ${response.status}`);
+      }
+    } catch (error) {
+      console.error("Erro ao enviar DELETE:", error);
+      alert("Falha na conexão com o servidor.");
+    } finally {
+      // Limpa contexto para evitar reuso acidental
+      deleteUrl = null;
+      rowToRemove = null;
+    }
+  });
+});
+</script>
+
 {% endblock %}
