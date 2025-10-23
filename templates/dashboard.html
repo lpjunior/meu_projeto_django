@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <!-- Cabeçalho -->
+  <header class="text-center mb-4">
+    <h1 class="display-6 mb-1">Bem-vindo</h1>
+    <p class="lead mb-0">Esta é a visão geral do sistema.</p>
+  </header>
+
+  <!-- Métricas gerais -->
+  <section class="mb-4" aria-labelledby="metricas-titulo">
+    <h2 id="metricas-titulo" class="h4 mb-3">Métricas gerais</h2>
+
+    <div class="row row-cols-1 row-cols-md-3 g-3">
+      <!-- Total de Produtos -->
+      <div class="col">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start">
+              <h3 class="h6 text-uppercase text-muted mb-2">Produtos</h3>
+              <span class="badge text-bg-primary">Total</span>
+            </div>
+            <p class="display-6 mb-0">{{ total_produtos }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Total de Clientes -->
+      <div class="col">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start">
+              <h3 class="h6 text-uppercase text-muted mb-2">Clientes</h3>
+              <span class="badge text-bg-success">Total</span>
+            </div>
+            <p class="display-6 mb-0">{{ total_clientes }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Produtos com pelo menos um favorito -->
+      <div class="col">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start">
+              <h3 class="h6 text-uppercase text-muted mb-2">Produtos favoritados</h3>
+              <span class="badge text-bg-warning">≥ 1 favorito</span>
+            </div>
+            <p class="display-6 mb-0">{{ produtos_com_favorito }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Produtos mais favoritados -->
+  <section aria-labelledby="top-titulo">
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white">
+        <h2 id="top-titulo" class="h4 mb-0">Produtos mais favoritados</h2>
+      </div>
+
+      {% if top_favoritos %}
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Produto</th>
+                  <th scope="col" class="text-end">Quantidade de favoritos</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for item in top_favoritos %}
+                <tr>
+                  <td class="text-muted">{{ forloop.counter }}</td>
+                  <td>
+                    <span class="fw-semibold">{{ item.produto_favorito__nome }}</span>
+                  </td>
+                  <td class="text-end">
+                    <span class="badge text-bg-secondary">{{ item.total }}</span>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      {% else %}
+        <div class="card-body">
+          <div class="alert alert-info mb-0" role="alert">
+            Nenhum produto foi favoritado ainda.
+          </div>
+        </div>
+      {% endif %}
+
+      <div class="card-footer bg-white d-flex justify-content-end">
+        <a href="{% url 'lista_produtos' %}" class="btn btn-sm btn-outline-primary">
+          Ver todos os produtos
+        </a>
+      </div>
+    </div>
+  </section>
+</div>
+{% endblock %}
